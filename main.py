@@ -1,25 +1,21 @@
 import os
+from datetime import datetime as dt
 
 from typing import Optional
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from file_engine import MovesData
+
 
 app = FastAPI()
+md = MovesData()
 
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Optional[bool] = None
 
 @app.get('/')
 def read_root():
-    return {'Hello': "World"}
+    return {'message': "Welcome to moves_api!"}
 
-@app.get('/items/{item_id}')
-def read_item(item_id: int, q: Optional[str] = None):
-    return {'item_id': item_id, 'q': q}
-
-@app.put('/items/{item_id}')
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
+@app.get('/v0/daily/activities/{date_YYYYMMDD}')
+def read_item(date_YYYYMMDD: str):
+    return md.get_daily_activity(date_YYYYMMDD)

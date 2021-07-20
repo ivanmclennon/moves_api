@@ -1,27 +1,29 @@
 import os
 import json
-from typing import Any
+from typing import Tuple
+from urllib.parse import urlparse, parse_qs
 
 
-DEFAULT_PATH = "C:\\Users\\madpe\\moves_json\\json"
+DEFAULT_DIR = "C:\\Users\\madpe\\moves_json\\json"
 
 
 class MovesData():
 
-    BASE_DIR: str = DEFAULT_PATH
+    BASE_DIR: str = DEFAULT_DIR
 
-    def __init__(self, path: str = None) -> None:
-        if path is not None and os.path.exists(path):
-            self.BASE_DIR = path
-        print('initialized')
+    def __init__(self, base_dir: str = None) -> None:
+        if base_dir is not None and os.path.exists(base_dir):
+            self.BASE_DIR = base_dir
 
-    def __call__(self, url: str) -> dict:
-        print('called')
-        return {}
+    def get_daily_activity(self, date: str) -> dict:
+        filename = f"activities_{date}.json"
+        path = os.path.join(self.BASE_DIR, os.sep.join(['daily', 'activities', filename]))
+        if os.path.exists(path):
+            with open(path, 'r', encoding='utf-8') as f:
+                json_response = json.load(f)
+            return json_response[0]
+        return {"message": f"No data for requested date: {date}"}
 
 
 if __name__ == '__main__':
-    user_request = "daily activities"
-    requested_path = os.path.join(DEFAULT_PATH, os.sep.join(user_request.split()))
-    print(requested_path)
-    print(os.listdir(requested_path)[:5])
+    print('file_engine.py executed')
