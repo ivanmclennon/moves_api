@@ -1,27 +1,30 @@
-import requests
-from file_engine import MovesData
+import aiohttp
+import asyncio
+import time
 
 
 test_cases_v0 = [
     "v0/daily/activities/20201010",
     "v0/daily/activities/19971012",
     "v0/daily/activities/20142459",
-    "v0/daily/activities/20140707",
+    "v0/daily/activities/;ALSKJGFH",
+    "v0/daily/activities/20140724",
+    "v0/daily/activities/20140612",
 ]
 
-test_cases_v1 = [
-    "daily/activities?year=2015&month=9&day=6",
-    "daily/activities?year=2016&month=3&day=23",
-    "daily/activities?year=2022&month=9&day=6",
-    "daily/activities?year=1997&month=11&day=27",
-    "daily/activities?year=654987&month=165765126&day=6540",
-    "daily/activities?year=null&month=null&day=null",
-]
 
-if __name__ == "__main__":
-    print('testing api')
-    print('v0')
-    for case in test_cases_v0:
-        url = "http://localhost:8000/" + case
-        res = requests.get(url)
-        print(res)
+start_time = time.time()
+
+
+async def main():
+    print('testing moves_api_v0')
+    async with aiohttp.ClientSession() as session:
+
+        for case in test_cases_v0:
+            url = f"http://localhost:8000/{case}"
+            print(f"Requesting {url}")
+            async with session.get(url) as res:
+                print(res.status)
+
+asyncio.run(main())
+print("--- %s seconds ---" % (time.time() - start_time))
